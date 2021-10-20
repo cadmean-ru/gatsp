@@ -14,7 +14,7 @@ my_canvas = Canvas(root, width=N*100, height=N*100, bg="black")
 my_canvas.pack(pady=1)
 
 
-recordDistance = 0
+recordDistance = math.inf
 # matrix = [[randrange(N * 100) for i in range(2)] for j in range(N)]
 matrix = [[658, 791], [258, 286], [31, 701], [883, 522], [142, 578], [585, 740], [741, 21], [279, 97], [196, 636]]
 firstOrder = list(range(0, N))
@@ -34,7 +34,7 @@ def lexicographical_permutation(arr):
 
 def find_optimal_path():
     global recordDistance, bestPerm
-    first_time = True
+    # first_time = True
     for p in perm:
         dist = 0
         for idx in p:
@@ -42,11 +42,11 @@ def find_optimal_path():
                 a = (matrix[p[idx]][0], matrix[p[idx]][1], 0)
                 b = (matrix[p[idx + 1]][0], matrix[p[idx + 1]][1], 0)
                 dist += distance.euclidean(a, b)
-        if first_time:
-            recordDistance = dist
-            bestPerm = p
-            first_time = False
-        elif dist < recordDistance:
+        # if first_time:
+        #     recordDistance = dist
+        #     bestPerm = p
+        #     first_time = False
+        if dist < recordDistance:
             recordDistance = dist
             bestPerm = p
         # print(p)
@@ -127,6 +127,8 @@ def select_population(arr, prop):
         r = r - prop[index]
         index += 1
     index -= 1
+    if index >= len(arr):
+        return arr[0].copy()
     return arr[index].copy()
 
 
@@ -157,9 +159,9 @@ def next_generation():
     global population
     new_pop = []
     for _ in range(popSize):
-        pop_a = select_population(population, fitness)
-        pop_b = select_population(population, fitness)
-        cross_pop = cross_over(pop_a, pop_b)
+        # pop_a = select_population(population, fitness)
+        # pop_b = select_population(population, fitness)
+        cross_pop = cross_over(bestPopulation.copy(), bestPopulation.copy())
         mutate(cross_pop)
         new_pop += [cross_pop]
     population = new_pop
@@ -169,8 +171,7 @@ generate_population()
 calculate_fitness()
 normalize_fitness()
 
-why = 0
-for why in range(500):
+for _ in range(10):
     next_generation()
     calculate_fitness()
     normalize_fitness()
